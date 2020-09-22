@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreeJS practice</title>
+    <style>
+        html {
+            margin: 0;
+            background: rgb(195, 188, 191);
+            background: radial-gradient(circle, rgba(195, 188, 191, 1) 0%, rgba(59, 56, 56, 1) 100%);
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import * as THREE from "./build/three.module.js"
+        import { GLTFLoader } from "./jsm/loaders/GLTFLoader.js";
+        import { OrbitControls } from "./jsm/controls/OrbitControls.js";
+
+
+        const scene = new THREE.Scene();
+        const fov = 75;
+        const aspect = window.innerWidth / window.innerHeight;  // the canvas default
+        const near = 0.1;
+        const far = 500;
+        const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        var lambo;
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0.0);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+
+
+        document.body.appendChild(renderer.domElement);
+
+        //custom model
+        var directionalLight = new THREE.DirectionalLight(0xffffff, 5);
+        scene.add(directionalLight);
+
+
+
+
+        const loader = new GLTFLoader();
+
+        loader.load('./scene.gltf', function (gltf) {
+            lambo = gltf.scene;
+            lambo.scale.set(3, 3, 3)
+            scene.add(lambo);
+
+
+        }, undefined, function (error) {
+
+            console.error(error);
+
+        });
+
+
+        camera.position.set(0, 2, 10);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+            lambo.rotation.y += 0.01;
+        }
+        animate();
+    </script>
+</body>
+
+</html>
